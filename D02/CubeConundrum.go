@@ -30,6 +30,7 @@ func main() {
 	scanner.Split(bufio.ScanLines)
 
 	impossibleGameSum := 0
+	minGamesPowerSum :=0
 
 	for scanner.Scan() {
 		gameId, result := parseLine(scanner.Text())
@@ -39,9 +40,13 @@ func main() {
 		if (isImpossible(result)) {
 			impossibleGameSum += gameId
 		}
+
+		minGame := getMinGame(result)
+		minGamesPowerSum += minGame.Power()
 	}
 
 	fmt.Printf("The sum of ids of impossible games is: %d\n", impossibleGameSum)
+	fmt.Printf("The sum of the minimum games powers is: %d\n", minGamesPowerSum)
 }
 
 func isImpossible(games []Game) bool {
@@ -57,6 +62,28 @@ type Game struct {
 	Blue	int
 	Red 	int
 	Green	 int
+}
+
+func (g *Game) Power() int {
+	return g.Red * g.Blue * g.Green 
+}
+
+func getMinGame(games []Game) Game {
+	result := games[0]
+
+	for _, game := range games {
+		if game.Red > result.Red {
+			result.Red = game.Red
+		}
+		if game.Blue > result.Blue {
+			result.Blue = game.Blue
+		}
+		if game.Green > result.Green {
+			result.Green = game.Green
+		}
+	}
+
+	return result
 }
 
 func parseLine(line string) (gameId int, games []Game) {
